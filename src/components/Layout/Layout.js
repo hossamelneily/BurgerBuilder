@@ -1,8 +1,8 @@
 import React, {Fragment, useState} from "react";
 import WithClass from "../../Hoc/Withclasses";
 import classes from "./Layout.module.css"
-import Toolbar from "../../components/UI/Navigation/Toolbar/Toolbar";
-import SideDrawer from "../../components/UI/Navigation/SideDrawer/SideDrawer";
+import Toolbar from "../UI/Navigation/Toolbar/Toolbar";
+import SideDrawer from "../UI/Navigation/SideDrawer/SideDrawer";
 // import SDClasses from '../UI/Navigation/SideDrawer/SideDrawer.module.css'
 
 const Layout=(props)=> {
