@@ -1,17 +1,31 @@
-import React from "react";
+import React, {Fragment, useState} from "react";
 import WithClass from "../../Hoc/Withclasses";
 import classes from "./Layout.module.css"
+import Toolbar from "../../components/UI/Navigation/Toolbar/Toolbar";
+import SideDrawer from "../../components/UI/Navigation/SideDrawer/SideDrawer";
+// import SDClasses from '../UI/Navigation/SideDrawer/SideDrawer.module.css'
+
+const Layout=(props)=> {
 
 
-const Layout=(props)=> (
 
-        <WithClass>
-                <div>ToolBar, SideBar, Backdrop </div>
+     const [SideDrawerState,SideDrawerStateUseState]=useState({show:false})
+
+    const SideDrawerHandler=()=>(
+        SideDrawerStateUseState({show:!SideDrawerState.show})
+    ) //need to change the state properly
+
+
+   return (
+
+        <Fragment>
+               <Toolbar clicked={SideDrawerHandler}/>
+                <SideDrawer show={SideDrawerState.show} clicked={SideDrawerHandler}/>
                 <main className={classes.Content}>
                         {props.children}
                 </main>
-        </WithClass>
+        </Fragment>
 
-)
+)}
 
 export default Layout
