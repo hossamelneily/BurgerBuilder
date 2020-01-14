@@ -13,14 +13,17 @@ const OrderSummary=(props)=>(
         </ul>
             <p><strong>Total Price: {props.price} $</strong></p>
         <p>Continue to Checkout?</p>
-        <Button btntype='Success' clicked={props.clicked_S}>
-                CONTINUE
-        </Button>
 
         <Button btntype='Danger'
                 clicked={props.clicked_D}>
                 CANCEL
         </Button>
+
+        <Button btntype='Success' clicked={props.clicked_S}>
+                CONTINUE
+        </Button>
+
+
 
     </WithClass>
 )
