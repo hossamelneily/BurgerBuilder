@@ -73,21 +73,27 @@ const BurgerBuilder =(props)=> {
     const ContinueHandler= ()=> {
 
         // alert('Continue!!')
-        const order = {
-            ingredients: {...BurgerState.Ingredients},
-            price: BurgerState.price
-        }
-        setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:BurgerState.Modal,spinner:true})
-
-        instance.post('/orders.json',order).then( response =>
-            // console.log(response)
-            setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:false,spinner:false})
-        )
-        .catch( error =>
-            // console.log(error)
-           setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:false,spinner:false})
-
-        )
+        // const order = {
+        //     ingredients: {...BurgerState.Ingredients},
+        //     price: BurgerState.price
+        // }
+        // setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:BurgerState.Modal,spinner:true})
+        //
+        // instance.post('/orders.json',order).then( response =>
+        //     // console.log(response)
+        //     setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:false,spinner:false})
+        // )
+        // .catch( error =>
+        //     // console.log(error)
+        //    setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:false,spinner:false})
+        //
+        // )
+        props.history.push(
+            {
+                pathname:'/checkout',
+                search:'?Ingredients='+BurgerState.Ingredients
+            }
+            )
     }
     const ZeroIngredients={...BurgerState.Ingredients}
     for(let index in ZeroIngredients){

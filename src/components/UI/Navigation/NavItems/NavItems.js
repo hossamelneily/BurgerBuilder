@@ -8,7 +8,7 @@ const Navitems=()=>(
     <ul className={classes.NavItems}>
 
         <Navitem active>Burger Builder</Navitem>
-        <Navitem >Login</Navitem>
+        <Navitem >Checkout</Navitem>
     </ul>
 )
 
