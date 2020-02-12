@@ -100,7 +100,11 @@ const   ContractData=(props)=>{
         })
     }
     InputHtml=InputElements.map((ele,key)=>(
-        <Input changed={(event)=>changedHandler(event,ele.ele)} key={key} elementType={ele.config.elementType} elementConfig={ele.config.elementConfig} value={ele.config.value} />
+        <Input changed={(event)=>changedHandler(event,ele.ele)}
+               key={key} elementtype={ele.config.elementType}
+                elementconfig = {ele.config.elementConfig}
+               value={ele.config.value}
+               />
     ))
     let SpinnerHtml =(<form onSubmit={OrderHandler}>
                  {/*<Input label='Full Name:'  inputtype='input' type='text' name='Name' placeholder='Enter Your Name'/>*/}
