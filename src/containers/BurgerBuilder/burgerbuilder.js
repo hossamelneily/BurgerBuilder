@@ -7,6 +7,8 @@ import Modal from "../../components/UI/Modal/Modal";
 import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import instance from "../../Axios/axios";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import {connect} from "react-redux";
+import * as actionTypes from '../../store/actions'
 
 const Ingredients_Prices={
     salad:0.2,
@@ -31,8 +33,8 @@ const BurgerBuilder =(props)=> {
 //     get('https://burgerbuilder-efc4e.firebaseio.com/ingredients.json').
 //     then(response => console.log(response)).
 //     catch(error => console.log(error))
-    useEffect(
-        () => console.log('a'),[])
+//     useEffect(
+//         () => console.log('a'),[])
     const AddIngredientsHandler=(type)=>{
         BurgerState.Ingredients[type]++
         const NewIngredients = {...BurgerState.Ingredients}
@@ -53,54 +55,49 @@ const BurgerBuilder =(props)=> {
         PurchasesNowHandler()
     }
 
-    const PurchasesNowHandler=()=>{
-        let NewPurchased = false
-        for(let i in BurgerState.Ingredients){
-             NewPurchased = BurgerState.Ingredients[i] > 0
-
-            if(NewPurchased){
-                break
-            }
-        }
-        setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:NewPurchased,Modal:false,spinner:false})
+    const PurchasesNowHandler=(ingredients)=>{
+        const sum= Object.entries(ingredients).reduce((sum,value,index)=>(
+            sum=sum+value[1]
+        ),0)
+        return sum>0
+        // let NewPurchased = false
+        // for(let i in props.ig){
+        //      NewPurchased = props.ig[i] > 0
+        //
+        //     if(NewPurchased){
+        //         break
+        //     }
+        // }
+        // setBurgerState({Ingredients:props.ig,price: props.price,purchased:NewPurchased,Modal:false,spinner:false})
     }
 
     const ModalHandler=()=>(
-        setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:!BurgerState.Modal,spinner:false})
+        setBurgerState({Ingredients:props.ig,price: props.price,purchased:BurgerState.purchased,Modal:!BurgerState.Modal,spinner:false})
 
     )
 
     const ContinueHandler= ()=> {
 
-        // alert('Continue!!')
-        // const order = {
-        //     ingredients: {...BurgerState.Ingredients},
-        //     price: BurgerState.price
-        // }
-        // setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:BurgerState.Modal,spinner:true})
-        //
-        // instance.post('/orders.json',order).then( response =>
-        //     // console.log(response)
-        //     setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:false,spinner:false})
-        // )
-        // .catch( error =>
-        //     // console.log(error)
-        //    setBurgerState({Ingredients:BurgerState.Ingredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:false,spinner:false})
-        //
-        // )
+
+        var queryparams = []
+        for(let i in props.ig){
+            queryparams.push(encodeURIComponent(i)+'='+encodeURIComponent(props.ig[i]))
+        }
+        queryparams.push('price='+props.price)
+
         props.history.push(
             {
                 pathname:'/checkout',
-                search:'?Ingredients='+BurgerState.Ingredients
+                search:'?'+queryparams.join('&')
             }
             )
     }
-    const ZeroIngredients={...BurgerState.Ingredients}
+    const ZeroIngredients={...props.ig}
     for(let index in ZeroIngredients){
         ZeroIngredients[index] = ZeroIngredients[index]<=0
     }
     let ModalHtml =null
-    let SpinnerHtml =(<OrderSummary price={BurgerState.price.toFixed(2)} clicked_D={ModalHandler} clicked_S={ContinueHandler} Ingredients={BurgerState.Ingredients}/>)
+    let SpinnerHtml =(<OrderSummary price={props.price.toFixed(2)} clicked_D={ModalHandler} clicked_S={ContinueHandler} Ingredients={props.ig}/>)
 
     if(BurgerState.spinner){
         SpinnerHtml=(<Spinner/>)
@@ -117,16 +114,16 @@ const BurgerBuilder =(props)=> {
     return (
             <WithClass>
 
-            <Burger Ingredients={BurgerState.Ingredients} />
+            <Burger Ingredients={props.ig} />
 
                 {ModalHtml}
 
             <BuildControls
-                add={AddIngredientsHandler}
-                remove={RemoveIngredientsHandler}
+                add={props.AddIngredientsHandler}
+                remove={props.RemoveIngredientsHandler}
                 disabled={ZeroIngredients}
-                price={BurgerState.price}
-                purchased={BurgerState.purchased}
+                price={props.price}
+                purchased={PurchasesNowHandler(props.ig)}
                 Modal={ModalHandler}
 
             />
@@ -135,4 +132,26 @@ const BurgerBuilder =(props)=> {
     )
 }
 
-export default BurgerBuilder
+const mapStateToProps=(state)=>{
+    console.log(state.Ingredients)
+    return{
+        ig:state.Ingredients,
+        price:state.price
+    }
+}
+
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        AddIngredientsHandler: (ig) => dispatch({type:actionTypes.AddIngredientsHandler,
+            payload:{
+            ig:ig,
+            IngredientsPrices:Ingredients_Prices
+            }}),
+        RemoveIngredientsHandler: (ig) => dispatch({type:actionTypes.RemoveIngredientsHandler,
+             payload:{
+            ig:ig,
+            IngredientsPrices:Ingredients_Prices
+            }}),
+    };
+}
+export default connect(mapStateToProps,mapDispatchToProps)(BurgerBuilder)
