@@ -79,16 +79,16 @@ const BurgerBuilder =(props)=> {
     const ContinueHandler= ()=> {
 
 
-        var queryparams = []
-        for(let i in props.ig){
-            queryparams.push(encodeURIComponent(i)+'='+encodeURIComponent(props.ig[i]))
-        }
-        queryparams.push('price='+props.price)
+        // var queryparams = []
+        // for(let i in props.ig){
+        //     queryparams.push(encodeURIComponent(i)+'='+encodeURIComponent(props.ig[i]))
+        // }
+        // queryparams.push('price='+props.price)
 
         props.history.push(
             {
                 pathname:'/checkout',
-                search:'?'+queryparams.join('&')
+                // search:'?'+queryparams.join('&')
             }
             )
     }
