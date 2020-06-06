@@ -9,44 +9,53 @@ import * as OrdersActionCreators from "../../../store/actions/orders";
 
 const Orders=(props)=> {
 
-    const [spinner ,setspinner] =useState(false)
-    const [OrdersState,setOrdersState] = useState([])
-
+    // const [spinner ,setspinner] =useState(false)
+    // const [OrdersState,setOrdersState] = useState([])
 
 
     useEffect(()=>{
-        setspinner(true)
-        instance.get('/orders.json?auth='+props.token).then(
-        (response) => {
-             const Orders=[]
-            Object.entries(response.data).map(([key,value],index)=>{
-                Orders.push({
-                   ...value,
-                    id:key
-
-                })
-            })
-            setOrdersState(Orders)
-            setspinner(false)
-
-        }
-    ).catch(
-        (error)=>{
-            setspinner(false)
-            console.log(error)
-    })
+        props.FetchInit()
+        props.FetchHandler(props.token,props.userId)
     },[])
+    // useEffect(()=>{
+    //     setspinner(true)
+    //     instance.get('/orders.json?auth='+props.token).then(
+    //     (response) => {
+    //          const Orders=[]
+    //         Object.entries(response.data).map(([key,value],index)=>{
+    //             Orders.push({
+    //                ...value,
+    //                 id:key
+    //
+    //             })
+    //         })
+    //         setOrdersState(Orders)
+    //         setspinner(false)
+    //
+    //     }
+    // ).catch(
+    //     (error)=>{
+    //         setspinner(false)
+    //         console.log(error)
+    // })
+    // },[])
 
 
-    let OrdersHtml = (OrdersState.map((value)=>(
+    // let OrdersHtml = (OrdersState.map((value)=>(
+    //             <Order key={value.id}
+    //                    ig={value.ingredients}
+    //                    price={value.price}
+    //             />
+    //             )))
+
+    console.log(props.orders)
+     let OrdersHtml =props.orders.map((value)=>
+
                 <Order key={value.id}
                        ig={value.ingredients}
                        price={value.price}
                 />
-                )))
-
-    console.log(props.orders)
-
+            )
 
     let SpinneHtml = props.spinner ? <Spinner/> : OrdersHtml
 
