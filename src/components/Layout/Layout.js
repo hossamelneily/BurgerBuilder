@@ -4,6 +4,7 @@ import classes from "./Layout.module.css"
 import Toolbar from "../UI/Navigation/Toolbar/Toolbar";
 import SideDrawer from "../UI/Navigation/SideDrawer/SideDrawer";
 // import SDClasses from '../UI/Navigation/SideDrawer/SideDrawer.module.css'
+import {connect} from "react-redux";
 
 const Layout=(props)=> {
 
@@ -19,8 +20,13 @@ const Layout=(props)=> {
    return (
 
         <Fragment>
-               <Toolbar clicked={SideDrawerHandler}/>
-                <SideDrawer show={SideDrawerState.show} clicked={SideDrawerHandler}/>
+               <Toolbar
+                   token={props.token}
+                   clicked={SideDrawerHandler}/>
+                <SideDrawer
+                    token={props.token}
+                    show={SideDrawerState.show}
+                    clicked={SideDrawerHandler}/>
                 <main className={classes.Content}>
                         {props.children}
                 </main>
@@ -28,4 +34,10 @@ const Layout=(props)=> {
 
 )}
 
-export default Layout
+const mapStateToProps=(state)=>{
+    return{
+        token:state.Auth.idToken
+    }
+}
+
+export default connect(mapStateToProps)(Layout)

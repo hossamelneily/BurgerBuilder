@@ -1,2 +1,0 @@
-export const AddIngredientsHandler='AddIngredientsHandler'
-export const RemoveIngredientsHandler='RemoveIngredientsHandler'

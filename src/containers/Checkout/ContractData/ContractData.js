@@ -6,6 +6,8 @@ import Spinner from "../../../components/UI/Spinner/Spinner";
 import {withRouter} from "react-router-dom";
 import Input from "../../../components/UI/input/input";
 import {connect} from "react-redux";
+import * as actionCreators from "../../../store/actions/orders";
+import {Redirect} from "react-router-dom";
 
 const   ContractData=(props)=>{
     // console.log(props)
@@ -59,13 +61,14 @@ const   ContractData=(props)=>{
                                  {value:'cheapest',displayName:'Cheapest'}
                                 ]
                     },
-                    value:''
+                    value:'fastest'
                 },
             },spinner:false})
 
     const OrderHandler=(event)=>{
         event.preventDefault()
-         setInputstate({customer:InputState.customer,spinner:true})
+        setInputstate({customer:InputState.customer,spinner:InputState.spinner})
+        props.purchaseHandlerStart()
         const FormData={}
         for(let element in InputState.customer){
             FormData[element]=InputState.customer[element].value
@@ -74,18 +77,22 @@ const   ContractData=(props)=>{
         const order = {
             ingredients: props.ig,
             price: props.price,
-            orderData:FormData
+            orderData:FormData,
+            userID:props.userId
         }
-        console.log(FormData)
-        instance.post('/orders.json',order).then( response =>{
-            console.log(response)
-            setInputstate({customer:InputState.customer,spinner:false})
-            props.history.push('/')
-        })
-        .catch( error => {
-            console.log(error)
-            setInputstate({customer: InputState.customer, spinner: false})
-        })
+        // console.log(FormData)
+        // instance.post('/orders.json',order).then( response =>{
+        //     console.log(response)
+        //     setInputstate({customer:InputState.customer,spinner:false})
+        //     props.history.push('/')
+        // })
+        // .catch( error => {
+        //     console.log(error)
+        //     setInputstate({customer: InputState.customer, spinner: false})
+        // })
+
+        props.purchaseHandler(order,props.token)
+       // props.InitPurchased()
     }
     const changedHandler=(event,element)=>{
         const upperObject = {...InputState.customer}
@@ -120,24 +127,38 @@ const   ContractData=(props)=>{
                  <Button btntype='Success'>Order</Button>
 
             </form>)
-    // if(props.spinner){
-    //     SpinnerHtml=(<Spinner/>)
-    // }
 
-    return(
-        <div className={classes.ContactData}>
+     const returnHtml = (
+         <div className={classes.ContactData}>
             <h4>Please Enter your Data!</h4>
-            {InputState.spinner? <Spinner/> : FormHtml}
+            {props.spinner? <Spinner/> : FormHtml}
         </div>
-    )
+     )
+    let summary = <Redirect to='/'/>
+    summary  = props.purchased ? summary : returnHtml
+    return summary
 }
+
+
+
 
 const mapStateToProps=(state)=>{
     return{
-        ig:state.Ingredients,
-        price:state.price
+        ig:state.BurgerBuilder.Ingredients,
+        price:state.BurgerBuilder.price,
+        spinner:state.Orders.spinner,
+        purchased:state.Orders.purchased,
+        token:state.Auth.idToken,
+        userId:state.Auth.localId
     }
 }
 
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        purchaseHandler:(order,token) => dispatch(actionCreators.purchaseHandler(order,token)),
+        purchaseHandlerStart:()=> dispatch(actionCreators.purchaseHandlerStart())
+    };
+}
 
-export default connect(mapStateToProps)(withRouter(ContractData))
+
+export default connect(mapStateToProps,mapDispatchToProps)(withRouter(ContractData))

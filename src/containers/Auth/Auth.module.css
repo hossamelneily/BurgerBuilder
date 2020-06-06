@@ -1,0 +1,19 @@
+.Submit{
+    margin: 10px auto;
+    width: 80%;
+    text-align: center;
+    box-shadow: 0px 2px 6px #ccc;
+    padding: 10px;
+    box-sizing: border-box;
+
+}
+
+.Submit input{
+    display: block;
+}
+
+@media (min-width: 500px) {
+    .Submit{
+        width: 500px;
+    }
+}

@@ -1,4 +1,4 @@
-import React , {useState,useEffect,useCallback} from 'react';
+import React , {useState,useEffect,useCallback,Fragment} from 'react';
 import WithClass from "../../Hoc/Withclasses";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
@@ -8,7 +8,8 @@ import Backdrop from "../../components/UI/Backdrop/Backdrop";
 import instance from "../../Axios/axios";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import {connect} from "react-redux";
-import * as actionTypes from '../../store/actions'
+import * as actionTypes from '../../store/actions/actionTypes'
+import * as actionCreators from '../../store/actions/BurgerBuilder'
 
 const Ingredients_Prices={
     salad:0.2,
@@ -20,138 +21,159 @@ const Ingredients_Prices={
 const BurgerBuilder =(props)=> {
 
 
+    const [purchasedState,setPurchased] = useState(false)
+    const [ModalState,setModal]=useState(false)
 
 
-    const [BurgerState, setBurgerState] = useState(
-        {Ingredients:{
-        salad:0,
-        meat:0,
-        bacon:0,
-        cheese:0
-    },price:0,purchased:false,Modal:false,spinner:false})
-// instance.
-//     get('https://burgerbuilder-efc4e.firebaseio.com/ingredients.json').
-//     then(response => console.log(response)).
-//     catch(error => console.log(error))
-//     useEffect(
-//         () => console.log('a'),[])
-    const AddIngredientsHandler=(type)=>{
-        BurgerState.Ingredients[type]++
-        const NewIngredients = {...BurgerState.Ingredients}
-        BurgerState.price = BurgerState.price+Ingredients_Prices[type]
-        setBurgerState({Ingredients:NewIngredients,price: BurgerState.price,purchased:false,Modal:false,spinner: false})
-       // console.log(BurgerState)
-        PurchasesNowHandler()
 
-    }
+    // useEffect(()=>{
+    //     setTimeout(()=>instance.
+    //             get('ingredients.json').
+    //             then(response => setBurgerState({
+    //             Ingredients:response.data,
+    //             price:BurgerState.price,
+    //             purchased:BurgerState.purchased,
+    //             Modal:BurgerState.Modal,
+    //             spinner:false
+    //     })).
+    //             catch(error => setBurgerState({
+    //             Ingredients:BurgerState.Ingredients,
+    //             price:BurgerState.price,
+    //             purchased:BurgerState.purchased,
+    //             Modal:BurgerState.Modal,
+    //             spinner:false
+    //     })),5000)
+    //
+    //     }
+    //     ,[])
 
-    const RemoveIngredientsHandler=(type)=>{
-        BurgerState.Ingredients[type]--
+    useEffect(()=>
+            props.SetInitIngredients()
+    ,[])
 
-        const NewIngredients = {...BurgerState.Ingredients}
-        BurgerState.price = BurgerState.price-Ingredients_Prices[type]
-        setBurgerState({Ingredients:NewIngredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:false,spinner:false})
-        // console.log(BurgerState)
-        PurchasesNowHandler()
-    }
+
+
+    // const AddIngredientsHandler=(type)=>{
+    //     BurgerState.Ingredients[type]++
+    //     const NewIngredients = {...BurgerState.Ingredients}
+    //     BurgerState.price = BurgerState.price+Ingredients_Prices[type]
+    //     setBurgerState({Ingredients:NewIngredients,price: BurgerState.price,purchased:false,Modal:false,spinner: false})
+    //    // console.log(BurgerState)
+    //     PurchasesNowHandler()
+    //
+    // }
+    //
+    // const RemoveIngredientsHandler=(type)=>{
+    //     BurgerState.Ingredients[type]--
+    //
+    //     const NewIngredients = {...BurgerState.Ingredients}
+    //     BurgerState.price = BurgerState.price-Ingredients_Prices[type]
+    //     setBurgerState({Ingredients:NewIngredients,price: BurgerState.price,purchased:BurgerState.purchased,Modal:false,spinner:false})
+    //     // console.log(BurgerState)
+    //     PurchasesNowHandler()
+    // }
 
     const PurchasesNowHandler=(ingredients)=>{
-        const sum= Object.entries(ingredients).reduce((sum,value,index)=>(
+        let sum
+        if(ingredients){
+            sum= Object.entries(ingredients).reduce((sum,value,index)=>(
             sum=sum+value[1]
         ),0)
+        }
+
         return sum>0
-        // let NewPurchased = false
-        // for(let i in props.ig){
-        //      NewPurchased = props.ig[i] > 0
-        //
-        //     if(NewPurchased){
-        //         break
-        //     }
-        // }
-        // setBurgerState({Ingredients:props.ig,price: props.price,purchased:NewPurchased,Modal:false,spinner:false})
     }
 
-    const ModalHandler=()=>(
-        setBurgerState({Ingredients:props.ig,price: props.price,purchased:BurgerState.purchased,Modal:!BurgerState.Modal,spinner:false})
+    const ModalHandler=()=> {
 
-    )
+        if (!props.token) {
+                props.history.push('/auth')
+
+        }
+         setModal(!ModalState)
+
+
+    }
+
 
     const ContinueHandler= ()=> {
-
-
-        // var queryparams = []
-        // for(let i in props.ig){
-        //     queryparams.push(encodeURIComponent(i)+'='+encodeURIComponent(props.ig[i]))
-        // }
-        // queryparams.push('price='+props.price)
-
         props.history.push(
             {
                 pathname:'/checkout',
-                // search:'?'+queryparams.join('&')
-            }
-            )
-    }
-    const ZeroIngredients={...props.ig}
-    for(let index in ZeroIngredients){
-        ZeroIngredients[index] = ZeroIngredients[index]<=0
-    }
-    let ModalHtml =null
-    let SpinnerHtml =(<OrderSummary price={props.price.toFixed(2)} clicked_D={ModalHandler} clicked_S={ContinueHandler} Ingredients={props.ig}/>)
 
-    if(BurgerState.spinner){
-        SpinnerHtml=(<Spinner/>)
-    }
-    if(BurgerState.Modal){
-        ModalHtml=(
-            <Modal click={ModalHandler} show={BurgerState.Modal} >
-                 {SpinnerHtml}
-
-            </Modal>
-        )
+            })
     }
 
-    return (
-            <WithClass>
 
+    const disabledButton=()=>{
+        const ZeroIngredients={...props.ig}
+        for(let index in ZeroIngredients){
+             ZeroIngredients[index] = ZeroIngredients[index]<=0
+        }
+        return ZeroIngredients
+    }
+
+
+
+
+
+    let orderSummary = (
+        <OrderSummary price={props.price.toFixed(2)} clicked_D={ModalHandler} clicked_S={ContinueHandler} Ingredients={props.ig}/>
+    )
+    let ModalHtml = (<Modal click={ModalHandler} show={ModalState} >
+                            {orderSummary}
+                    </Modal>)
+
+
+    let burger = props.error ? <p>Ingredients can't be loaded!</p> : <Spinner />;
+
+    if(props.ig){
+
+        burger = (
+            <Fragment>
             <Burger Ingredients={props.ig} />
-
-                {ModalHtml}
-
-            <BuildControls
+             <BuildControls
                 add={props.AddIngredientsHandler}
                 remove={props.RemoveIngredientsHandler}
-                disabled={ZeroIngredients}
+                disabled={disabledButton()}
                 price={props.price}
                 purchased={PurchasesNowHandler(props.ig)}
                 Modal={ModalHandler}
+                token = {props.token}
+                />
+            </Fragment>)
+    }
+    return (
+            <WithClass>
 
-            />
+
+                {burger}
+                {ModalState?ModalHtml:null}
+
+
+
+
             </WithClass>
 
     )
 }
 
 const mapStateToProps=(state)=>{
-    console.log(state.Ingredients)
     return{
-        ig:state.Ingredients,
-        price:state.price
+        ig:state.BurgerBuilder.Ingredients,
+        price:state.BurgerBuilder.price,
+        error:state.BurgerBuilder.error,
+        token :state.Auth.idToken,
     }
 }
 
 const mapDispatchToProps=(dispatch)=>{
     return{
-        AddIngredientsHandler: (ig) => dispatch({type:actionTypes.AddIngredientsHandler,
-            payload:{
-            ig:ig,
-            IngredientsPrices:Ingredients_Prices
-            }}),
-        RemoveIngredientsHandler: (ig) => dispatch({type:actionTypes.RemoveIngredientsHandler,
-             payload:{
-            ig:ig,
-            IngredientsPrices:Ingredients_Prices
-            }}),
+        AddIngredientsHandler: (ig) => dispatch(actionCreators.AddIngredientsHandler(ig,Ingredients_Prices)),
+        RemoveIngredientsHandler: (ig) => dispatch(actionCreators.RemoveIngredientsHandler(ig,Ingredients_Prices)),
+        SetInitIngredients: () => dispatch(actionCreators.initIngredients())
     };
 }
 export default connect(mapStateToProps,mapDispatchToProps)(BurgerBuilder)
+
+

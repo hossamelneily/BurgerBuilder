@@ -14,7 +14,7 @@ const SideDrawer=(props)=>{
     return(
     <Fragment>
         <Backdrop show={props.show} click={props.clicked}/>
-        <div className={SideDrawerClasses.join(' ')}>
+        <div className={SideDrawerClasses.join(' ')} onClick={props.clicked}>
             <Logo height='11%'/>
             <nav>
                 <Navitems/>

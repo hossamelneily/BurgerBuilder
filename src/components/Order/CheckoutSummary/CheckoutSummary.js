@@ -4,7 +4,7 @@ import Button from "../../UI/Buttons/Buttons";
 import classes from './CheckoutSummary.module.css'
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-import * as actionTypes from "../../../store/actions";
+import * as actionTypes from "../../../store/actions/actionTypes";
 
 
 const CheckoutSummary=(props)=> {
@@ -50,8 +50,8 @@ const CheckoutSummary=(props)=> {
 
 const mapStateToProps=(state)=>{
     return{
-        ig:state.Ingredients,
-        price:state.price
+        ig:state.BurgerBuilder.Ingredients,
+        price:state.BurgerBuilder.price
     }
 }
 
