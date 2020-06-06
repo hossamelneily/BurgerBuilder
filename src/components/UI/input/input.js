@@ -13,7 +13,7 @@ const Input=(props)=> {
             break
         case('select'):
             const options = props.elementconfig.options
-            InputHtml= (<select onChange={props.changed} className={classes.InputElement} >{
+            InputHtml= (<select onChange={props.changed} value={props.value} className={classes.InputElement} >{
                 options.map((value,index) => (<option  key={index} value={value.value}>{value.displayName}</option>))
             }</select>)
             break

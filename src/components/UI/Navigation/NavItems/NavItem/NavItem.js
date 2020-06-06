@@ -4,7 +4,7 @@ import {Link,NavLink} from "react-router-dom";
 import Orders from "../../../../Order/Order";
 
 const Navitem=(props)=>{
-    console.log(props.active)
+    // console.log(props.active)
     return(
 
     <li className={classes.NavItem}>
