@@ -1,10 +1,10 @@
-#Burger Builder Application w/ ReactJS
-App Description
+# Burger Builder Application w/ ReactJS
+
+## App Description
 This project was bootstrapped with Create React App.
+This is a simple react demo project.
 
-This is a simple react demo project using all I learned
-
-##What I used?
+## What I used?
 1) React 16 / Jsx pages
 2) React Router
 3) React-Thunk
@@ -18,7 +18,8 @@ This is a simple react demo project using all I learned
 11) CSS3 w/ Mobile First
 12) FireBase for Database 
 13) Heroku Hosting
-##How Can I Start?
+
+## How Can I Start?
 ```bash
 npm install
 ```
