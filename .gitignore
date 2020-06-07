@@ -23,5 +23,3 @@ yarn-debug.log*
 yarn-error.log*
 
 
-MyNotes
-!/src/components/UI/input/README.md
